@@ -1,0 +1,16 @@
+---
+# resize image to 20G
+kvm_image_size: '20G'
+
+# choose distribution and source
+kvm_download_url: 'https://cloud-images.ubuntu.com'
+kvm_dist_release_date: 'current'
+kvm_distname: 'impish'
+kvm_image_name: '{{ kvm_distname }}-server-cloudimg-amd64-disk-kvm.img'
+kvm_cloudimage_kvm_url: '{{ kvm_download_url }}/{{ kvm_distname }}/{{ kvm_dist_release_date }}/{{ kvm_image_name }}'
+kvm_cloudimage_kvm_checksum: '{{ kvm_download_url }}/{{ kvm_distname }}/{{ kvm_dist_release_date }}/SHA256SUMS'
+kvm_image_path: '/var/lib/libvirt/images'
+
+# cloud-init have to create a ISO
+cloudinit_rendering: virt
+...

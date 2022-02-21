@@ -1,0 +1,76 @@
+---
+- include: check.yml
+
+#source: https://askubuntu.com/questions/1375589/what-are-the-different-versions-available-as-ubuntu-cloud-images-general-guid
+#source: https://blog.programster.org/create-ubuntu-20-kvm-guest-from-cloud-image
+
+- name: create kvm vm instance
+  block:
+  # necessary condition 
+  - name: pre_task - checks and installations
+    include_tasks: pre-install.yml
+
+  # mkdir template
+  - name: create directory
+    ansible.builtin.file:
+      path: '{{ kvm_image_path }}/templates'
+      state: directory
+      owner: libvirt-qemu
+      group: kvm
+      mode: '0711'
+
+  # download checksum-file
+  - name: download checksumfile
+    ansible.builtin.get_url:
+      url: '{{ kvm_cloudimage_kvm_checksum }}'
+      dest: '{{ kvm_image_path }}/templates'
+
+  - name: get checksumfile
+    ansible.builtin.slurp:
+      src: "{{ kvm_image_path }}/templates/SHA256SUMS"
+    register: sha256sum
+
+  # a bit og regex dark magic
+  # one file with a lot of checksums
+  # target-line: 432ec0aed11aa044b8626bc485e93bd2c53ab9a376c111627ff399138bc3769f *impish-server-cloudimg-amd64-disk-kvm.img
+  # '\\1' -> group1
+  - name: set_fact - file chechsum
+    set_fact:
+      fileSHA256: "{{ sha256sum['content'] | b64decode | split('\n') | regex_search('(.{64})\\s\\*impish-server-cloudimg-amd64-disk-kvm\\.img', '\\1') }}"
+
+  # download image
+  - name: download latest kvm_image
+    ansible.builtin.get_url:
+      url: "{{ kvm_cloudimage_kvm_url }}"
+      dest: '{{ kvm_image_path }}/templates'
+      checksum: sha256:'{{ fileSHA256 }}'
+      force: False
+
+  - name: convert image file
+    ansible.builtin.shell:
+      cmd: >
+        qemu-img convert -f qcow2 -O qcow2 
+        {{ kvm_image_path }}/templates/{{ kvm_image_name }} 
+        {{ kvm_image_path }}/{{ cloudinit_fqdn }}.qcow2
+
+  - name: resize image file
+    ansible.builtin.shell:
+      cmd: >
+        qemu-img resize {{ kvm_image_path }}/{{ cloudinit_fqdn }}.qcow2 {{ kvm_image_size }}
+
+  - name: fixup user group settings
+    ansible.builtin.file:
+      path: '{{ kvm_image_path }}/{{ cloudinit_fqdn }}.qcow2'
+      owner: libvirt-qemu
+      group: kvm
+      mode: '0600'
+
+  - name: import vm
+    ansible.builtin.shell:
+      cmd: >
+        virt-install --import --noautoconsole --quiet --qemu-commandline="-smbios type=1,serial=ds=nocloud"
+        --name {{ cloudinit_fqdn }} --memory 2048 --os-type linux --os-variant ubuntu21.04
+        --disk {{ kvm_image_path }}/{{ cloudinit_fqdn }}-cloudinit.iso,device=cdrom
+        --disk {{ kvm_image_path }}/{{ cloudinit_fqdn }}.qcow2,device=disk,bus=virtio 
+        --virt-type kvm --graphics none --network network=default,model=virtio
+...

@@ -1,0 +1,19 @@
+# Standards: 0.2
+---
+galaxy_info:
+  # @meta author:value: [Frank Dornheim](https://github.com/conloos)
+  author: "Frank Dornheim <dornheim@posteo.de>"
+  namespace: clin
+  role_name: kvm-vm
+  description: Role for create a vm and boot with cloudinit.
+  license: GPLv3
+  min_ansible_version: 2.11.5
+  platforms:
+    - name: Ubuntu
+      versions:
+        - 21.10
+  galaxy_tags: []
+
+dependencies:
+  - cloud-init
+
