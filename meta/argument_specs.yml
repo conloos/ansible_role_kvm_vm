@@ -4,51 +4,41 @@ argument_specs:
     options:
       cloudinit_fqdn:
         type: str
-        required: yes
         default: "{{ hostvars['localhost']['cloudinit_fqdn'] }}"
         description: FQDN of the system.
       kvm_image_size:
         type: str
-        required: no
         default: '20G'
         description: resitze image to ...
       kvm_download_url:
-        type: url
-        required: no
+        type: str
         default: 'https://cloud-images.ubuntu.com'
         description: Download url for the Image.
       kvm_dist_release_date:
         type: str
-        required: no
         default: 'current'
         description: release date of the image
       kvm_distname:
         type: str
-        required: no
         default: 'impish'
         description: distribution name
       kvm_image_name:
         type: str
-        required: no
         default: '{{ kvm_distname }}-server-cloudimg-amd64-disk-kvm.img'
         description: name of the image
       kvm_cloudimage_kvm_url:
         type: str
-        required: no
         default: '{{ kvm_download_url }}/{{ kvm_distname }}/{{ kvm_dist_release_date }}/{{ kvm_image_name }}'
         description: download uri part to combine with kvm_download_url
       kvm_cloudimage_kvm_checksum:
         type: str
-        required: no
         default: '{{ kvm_download_url }}/{{ kvm_distname }}/{{ kvm_dist_release_date }}/SHA256SUMS'
         description: sha265sum file for the image(s)
       kvm_image_path:
         type: str
-        required: no
         default: '/var/lib/libvirt/images'
         description: path to store the kvm-image
       cloudinit_default_rendering:
         type: str
-        required: no
         default: virt
         description: How to provide the cloudinit data. "container" produces different dictionarys, "virt" creates an ISO.
