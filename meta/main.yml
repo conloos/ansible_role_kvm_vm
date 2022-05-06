@@ -3,7 +3,6 @@
 galaxy_info:
   # @meta author:value: [Frank Dornheim](https://github.com/conloos)
   author: "Frank Dornheim <dornheim@posteo.de>"
-  namespace: clin
   role_name: kvm-vm
   description: Role for create a vm and boot with cloudinit.
   license: GPLv3
