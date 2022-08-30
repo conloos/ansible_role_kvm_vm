@@ -10,9 +10,8 @@ galaxy_info:
   platforms:
     - name: Ubuntu
       versions:
-        - 21.10
+        - 22.04
   galaxy_tags: []
 
-dependencies:
-  - cloud-init
+dependencies: []
 
