@@ -1,17 +1,15 @@
-# Standards: 0.2
 ---
 galaxy_info:
-  # @meta author:value: [Frank Dornheim](https://github.com/conloos)
-  author: "Frank Dornheim <dornheim@posteo.de>"
-  role_name: kvm-vm
-  description: Role for create a vm and boot with cloudinit.
+  author: "Frank Dornheim"
+  role_name: "ansible_kvm_vm"
+  description: "An Ansible Role to create a KVM VM."
   license: GPLv3
   min_ansible_version: 2.11.5
   platforms:
     - name: Ubuntu
       versions:
-        - 22.04
-  galaxy_tags: []
-
+        - jammy
+  galaxy_tags:
+    - ansible
 dependencies: []
-
+...

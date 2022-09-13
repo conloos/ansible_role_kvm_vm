@@ -1,10 +1,16 @@
+---
 argument_specs:
   main:
-    short_description: Main entrypoint
+    # https://docs.ansible.com/ansible/latest/user_guide/playbooks_reuse_roles.html#role-argument-validation
+    # https://docs.ansible.com/ansible/latest/dev_guide/developing_program_flow_modules.html#argument-spec
+    short_description: Role for creating kvm VMs.
+    description: Role for creating kvm VMs.
+    author:
+      - Frank Dornheim
     options:
       cloudinit_fqdn:
         type: str
-        default: "{{ hostvars['localhost']['cloudinit_fqdn'] }}"
+        required: true
         description: FQDN of the system.
       kvm_image_size:
         type: str
@@ -42,3 +48,4 @@ argument_specs:
         type: str
         default: virt
         description: How to provide the cloudinit data. "container" produces different dictionarys, "virt" creates an ISO.
+...
