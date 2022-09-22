@@ -1,11 +1,11 @@
 ---
-- name: create kvm vm instance
+- name: Create kvm vm instance
   block:
-  - name: install kvm packages
+  - name: Install kvm packages
     ansible.builtin.apt:
       name: '{{ item }}'
       state: present
-      update_cache: True
+      update_cache: true
     register: apt_status
     until: apt_status is success
     delay: 6
@@ -18,4 +18,4 @@
       - libvirt-daemon
       - qemu-system-x86
     when: ansible_os_family == 'Debian'
-   
+...
